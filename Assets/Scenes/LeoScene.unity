@@ -371,6 +371,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   rotationSpeed: 30
+  tiltSpeed: 5000
   zoomSpeed: 1000
 --- !u!1001 &743296899
 PrefabInstance:

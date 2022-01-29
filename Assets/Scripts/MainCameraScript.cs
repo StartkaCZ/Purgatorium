@@ -6,6 +6,7 @@ public class MainCameraScript : MonoBehaviour
 {
     public int speed;
     public int rotationSpeed;
+    public int tiltSpeed;
     public int zoomSpeed;
     const float MAXDISTANCE = 50;
     const float MINDISTANCE = 20;
@@ -40,11 +41,16 @@ public class MainCameraScript : MonoBehaviour
     {
         if (Input.GetMouseButton(2))
         {
-            float x = transform.eulerAngles.x + Input.GetAxis("Mouse Y") * rotationSpeed * Time.deltaTime; ;
+
+            Debug.Log(transform.eulerAngles.x); 
+
+            float x = transform.eulerAngles.x + Input.GetAxis("Mouse Y") * rotationSpeed * Time.deltaTime;
+            x = Mathf.Clamp(x, 35, 70);
             float y = transform.eulerAngles.y;
             float z = 0;
 
             transform.localRotation = Quaternion.Euler(x, y, z);
+
         }
     
     }
