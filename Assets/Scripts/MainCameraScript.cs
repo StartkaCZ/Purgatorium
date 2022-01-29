@@ -4,31 +4,37 @@ using UnityEngine;
 
 public class MainCameraScript : MonoBehaviour
 {
-    int horizontalMovement;
-    int verticalMovement;
-    Camera mainCamera;
-    Vector3 cameraMovement;
-    Vector3 cameraRotation;
-    Quaternion cRotation;
-    public int cameraSpeed;
+    public int speed;
+    public int rotationSpeed;
+    Vector3 direction;
+    Vector3 moveDir;
     // Start is called before the first frame update
-    void Start()
-    {
-        mainCamera = Camera.main;
-    }
     // Update is called once per frame
     void Update()
     {
         //Moves Camera
-        cameraMovement = new Vector3(Input.GetAxis("Horizontal") * cameraSpeed * Time.deltaTime, 0, Input.GetAxis("Vertical") * cameraSpeed * Time.deltaTime);
-        mainCamera.transform.position += cameraMovement;
+        direction = Quaternion.AngleAxis(-45, Vector3.up) * direction;
+
+        direction = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
+
+        if (direction.magnitude >= 0.1f)
+        {
+            moveDir = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * direction;
+            transform.position += (moveDir.normalized * speed * Time.deltaTime);
+        }
 
         //Rotates Camera
-        cameraRotation = new Vector3(0, Input.GetAxis("Rotate") * cameraSpeed * Time.deltaTime, 0);
-        cRotation.y = cameraRotation.y;
-        cRotation.x = mainCamera.transform.rotation.x;
-        cRotation.z = mainCamera.transform.rotation.z;
-        mainCamera.transform.rotation = cRotation;
+        ProcessRotation();
 
+    }
+
+    private void ProcessRotation()
+    {
+        //Rotating the camera along the Y axis
+        float pitch = transform.eulerAngles.x;
+        float yaw = transform.eulerAngles.y + Input.GetAxis("Rotate") * rotationSpeed * Time.deltaTime;
+        float roll = 0;
+
+        transform.localRotation = Quaternion.Euler(pitch, yaw, roll);
     }
 }

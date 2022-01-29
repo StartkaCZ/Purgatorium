@@ -369,7 +369,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2aeaed42fd80414db31610b56cdad12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraSpeed: 10
+  speed: 5
+  rotationSpeed: 10
 --- !u!1001 &743296899
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -425,17 +426,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Soul
       objectReference: {fileID: 0}
+    - target: {fileID: 4456108947922653311, guid: 737039d066a0b9c498c19babd52ef755, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5243244908867638507, guid: 737039d066a0b9c498c19babd52ef755, type: 3}
       propertyPath: cam
       value: 
       objectReference: {fileID: 334805883}
     - target: {fileID: 8076181252252958096, guid: 737039d066a0b9c498c19babd52ef755, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8076181252252958096, guid: 737039d066a0b9c498c19babd52ef755, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 737039d066a0b9c498c19babd52ef755, type: 3}
@@ -578,7 +583,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1295435630
 MonoBehaviour:
   m_ObjectHideFlags: 0
