@@ -6,9 +6,12 @@ public class MainCameraScript : MonoBehaviour
 {
     public int speed;
     public int rotationSpeed;
+    public int zoomSpeed;
+    const float MAXDISTANCE = 50;
+    const float MINDISTANCE = 20;
     Vector3 direction;
     Vector3 moveDir;
-    // Start is called before the first frame update
+    Transform objectHit;
     // Update is called once per frame
     void Update()
     {
@@ -26,6 +29,9 @@ public class MainCameraScript : MonoBehaviour
         //Rotates Camera
         ProcessRotation();
 
+        //Zooming in and out with the Camera
+        processZooming();
+
     }
 
     private void ProcessRotation()
@@ -36,5 +42,33 @@ public class MainCameraScript : MonoBehaviour
         float roll = 0;
 
         transform.localRotation = Quaternion.Euler(pitch, yaw, roll);
+    }
+
+    void processZooming()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            objectHit = hit.transform;
+
+            float distance = Vector3.Distance(objectHit.position, Camera.main.transform.position);
+
+            float zoomDistance = zoomSpeed * Input.mouseScrollDelta.y * Time.deltaTime;
+
+            //Zooming in and out
+            if (zoomDistance < 0 && distance < MAXDISTANCE)
+            {
+                transform.Translate(ray.direction * zoomDistance, Space.World);
+            }
+            else if (zoomDistance > 0 && distance > MINDISTANCE)
+            {
+                transform.Translate(ray.direction * zoomDistance, Space.World);
+            }
+
+        }
+
     }
 }
