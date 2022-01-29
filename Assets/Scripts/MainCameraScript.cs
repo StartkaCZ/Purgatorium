@@ -30,21 +30,37 @@ public class MainCameraScript : MonoBehaviour
         ProcessRotation();
 
         //Zooming in and out with the Camera
-        processZooming();
+        ProcessZooming();
 
+        //Tilting Camera
+        ProcessTilting();
     }
+
+    void ProcessTilting()
+    {
+        if (Input.GetMouseButton(2))
+        {
+            float x = transform.eulerAngles.x + Input.GetAxis("Mouse Y") * rotationSpeed * Time.deltaTime; ;
+            float y = transform.eulerAngles.y;
+            float z = 0;
+
+            transform.localRotation = Quaternion.Euler(x, y, z);
+        }
+    
+    }
+
 
     private void ProcessRotation()
     {
         //Rotating the camera along the Y axis
-        float pitch = transform.eulerAngles.x;
-        float yaw = transform.eulerAngles.y + Input.GetAxis("Rotate") * rotationSpeed * Time.deltaTime;
-        float roll = 0;
+        float x = transform.eulerAngles.x;
+        float y = transform.eulerAngles.y + Input.GetAxis("Rotate") * rotationSpeed * Time.deltaTime;
+        float z = 0;
 
-        transform.localRotation = Quaternion.Euler(pitch, yaw, roll);
+        transform.localRotation = Quaternion.Euler(x, y, z);
     }
 
-    void processZooming()
+    void ProcessZooming()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
