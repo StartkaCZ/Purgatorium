@@ -1,23 +1,29 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MainCameraScript : MonoBehaviour
 {
-    public int speed;
-    public int rotationSpeed;
-    public int tiltSpeed;
-    public int zoomSpeed;
-    const float MAXDISTANCE = 50;
-    const float MINDISTANCE = 20;
+    [SerializeField]
+    float speed = 50.0f;
+    [SerializeField]
+    float rotationSpeed = 75.0f;
+    [SerializeField]
+    float tiltSpeed = 5000.0f;
+    [SerializeField]
+    float zoomSpeed = 1000.0f;
+
+    const float MAXDISTANCE = 125.0f;
+    const float MINDISTANCE = 70.0f;
+
     Vector3 direction;
     Vector3 moveDir;
     Transform objectHit;
-    // Update is called once per frame
+
+
+
     void Update()
     {
         //Moves Camera
-        direction = Quaternion.AngleAxis(-45, Vector3.up) * direction;
+        //direction = Quaternion.AngleAxis(-45, Vector3.up) * direction;
 
         direction = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
 
@@ -41,9 +47,6 @@ public class MainCameraScript : MonoBehaviour
     {
         if (Input.GetMouseButton(2))
         {
-
-            Debug.Log(transform.eulerAngles.x); 
-
             float x = transform.eulerAngles.x + Input.GetAxis("Mouse Y") * rotationSpeed * Time.deltaTime;
             x = Mathf.Clamp(x, 35, 70);
             float y = transform.eulerAngles.y;
@@ -65,6 +68,7 @@ public class MainCameraScript : MonoBehaviour
 
         transform.localRotation = Quaternion.Euler(x, y, z);
     }
+
 
     void ProcessZooming()
     {

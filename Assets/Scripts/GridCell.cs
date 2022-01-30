@@ -31,6 +31,7 @@ public class GridCell : MonoBehaviour
 
     Vector2Int      _gridLocalPosition;
     Type            _type;
+    Type            _previousType;
 
 
     public const int GRID_SIZE = 10;
@@ -105,6 +106,7 @@ public class GridCell : MonoBehaviour
             if (boxCollider.bounds.Intersects(_boxCollider.bounds))
             {
                 _type = Type.ValidExterior;
+                _previousType = _type;
                 SetColourBasedOnType();
                 break;
             }
@@ -113,26 +115,61 @@ public class GridCell : MonoBehaviour
     }
 
 
-    public void CellUnderConstruction()
+    public void UnderConstruction()
     {
-        StartCoroutine(UnderConstruction());
+        if (_type != Type.BuildingRoom)
+            _previousType = _type;
+
+        CheckIfObstructed();
+        SetColourBasedOnType();
     }
 
-    private IEnumerator UnderConstruction()
+    private void CheckIfObstructed()
     {
-        Type before = _type;
+        if (_type == Type.ValidExterior)
+            _type = Type.BuildingRoom;
+        else if (_type == Type.Invalid ||
+                 _type == Type.InvalidInterior ||
+                 _type == Type.ItemOccupied)
+            _type = Type.InvalidInterior;
+    }
 
-        _type = Type.BuildingRoom;
+
+    public void ReturnToNormal(bool roomDestroyed=false)
+    {
+        if (roomDestroyed)
+        {
+            _type = Type.ValidExterior;
+            _previousType = _type;
+        }
+        else
+            _type = _previousType;
+
         SetColourBasedOnType();
+    }
 
-        yield return new WaitUntil(() => Input.GetMouseButton(0) == false);
-
+    public void PartOfRoom()
+    {
         _type = Type.ValidInterior;
+        _previousType = _type;
+        SetColourBasedOnType();
+    }
+
+    public void ContainsItem()
+    {
+        _type = Type.ItemOccupied;
         SetColourBasedOnType();
     }
 
 
-    public Vector2Int GridPosition { get => _gridLocalPosition; }
+
+    public Type OccupationType { get => _type; }
+
+    public Vector2Int GridLocalPosition { get => _gridLocalPosition; }
+
+    public bool CanBeBuiltUpon { get => _previousType == Type.ValidExterior; }
+
+    public bool CanContainItem { get => _type == Type.ValidInterior; }
 
     public int Index { get => _index; set => _index = value; }
 }

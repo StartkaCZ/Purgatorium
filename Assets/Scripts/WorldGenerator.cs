@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+// namespace
+using EnumHolder;
 
 [ExecuteInEditMode]
 public class WorldGenerator : MonoBehaviour
@@ -56,39 +58,95 @@ public class WorldGenerator : MonoBehaviour
     }
 
 
-    public List<GridCell> SelectedGrid(GridCell start, GridCell end)
+    public Dictionary<RoomPart, List<GridCell>> SelectedGrid(GridCell start, GridCell end)
     {
-        List<GridCell> cells = new List<GridCell>();
+        Dictionary<RoomPart, List<GridCell>> roomCells = new Dictionary<RoomPart, List<GridCell>>(3)
+        {
+            { RoomPart.Corner, new List<GridCell>(4) },
+            { RoomPart.Edge, new List<GridCell>() },
+            { RoomPart.Space, new List<GridCell>() }
+        };
 
-        Vector2Int startPosition = start.GetGridLocalPosition();
-        Vector2Int endPosition = end.GetGridLocalPosition();
-
+        Vector2Int startPosition = start.GridLocalPosition;
+        Vector2Int endPosition = end.GridLocalPosition;
+        Vector2Int endSearchPosition = endPosition;
         Vector2Int positionDifference = endPosition - startPosition;
 
-        for (int i = startPosition.x; i < positionDifference.x; i++)
+        // if x difference is 0, we need to offset it by 1
+        if (positionDifference.x != 0)
+            positionDifference.x /= Mathf.Abs(positionDifference.x);
+        else
+            positionDifference.x = 1;
+        // if y difference is 0, we need to offset it by 1
+        if (positionDifference.y != 0)
+            positionDifference.y /= Mathf.Abs(positionDifference.y);
+        else
+            positionDifference.y = 1;
+
+        // extend the search by 1 on x and y so that we get the end as well
+        endSearchPosition += positionDifference;
+
+        for (int i = startPosition.x; i != endSearchPosition.x; )
         {
-            for (int j = startPosition.y; j < positionDifference.y; j++)
+            for (int j = startPosition.y; j != endSearchPosition.y; )
             {
-                
+                int index = ConvertPositionToIndex(new Vector2Int(i, j));
+                // check for corners
+                if ((i == startPosition.x && j == startPosition.y) || 
+                    (i == startPosition.x && j == endPosition.y) ||
+                    (i == endPosition.x && j == startPosition.y) ||
+                    (i == endPosition.x && j == endPosition.y))
+                {
+                    roomCells[RoomPart.Corner].Add(_grid[index]);
+                }
+                // check for edges
+                else if (i == startPosition.x ||
+                         i == endPosition.x ||
+                         j == startPosition.y ||
+                         j == endPosition.y)
+                {
+                    roomCells[RoomPart.Edge].Add(_grid[index]);
+                }
+                // check for space
+                else
+                    roomCells[RoomPart.Space].Add(_grid[index]);
+
+                // mark the grid cell under construction
+                _grid[index].UnderConstruction();
+
+
+                if (positionDifference.y > 0)
+                    j++;
+                else
+                    j--;
             }
+
+            if (positionDifference.x > 0)
+                i++;
+            else
+                i--;
         }
 
-        print(startPosition);
-        print(endPosition);
-        print(positionDifference);
 
-        print("-------------INDEX----------------------");
-
-        return cells;
+        return roomCells;
     }
+
 
     public int ConvertPositionToIndex(Vector2Int position)
     {
         // y = rows, x = colums
         int index = position.y * _width + position.x;
 
-        print(index);
         return index;
+    }
+
+    public GridCell GetGridCellFromWorldPosition(Vector3 position)
+    {
+        // y = rows, x = colums
+        Vector2Int location = new Vector2Int(Mathf.RoundToInt(position.x), Mathf.RoundToInt(position.z)) / GridCell.GRID_SIZE;
+        int index = location.y * _width + location.x;
+
+        return _grid[index];
     }
 
 
