@@ -44,7 +44,9 @@ public class GameManager : MonoBehaviour
         foreach (var cell in gridCells)
         {
             if (_exteriorBuilding.IsUnlocked)
-                cell.CheckIfInsideExteriorBuilding(_exteriorBuilding.BoxColliders);
+            {
+                cell.CheckExteriorBuilding(_exteriorBuilding);
+            }
         }
     }
 

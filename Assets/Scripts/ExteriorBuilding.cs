@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class ExteriorBuilding : MonoBehaviour
 {
+
+    [SerializeField]
+    BoxCollider[]   _boxColliders;
+    [SerializeField]
+    BoxCollider[]   _entrances;
+    [SerializeField]
+    BoxCollider     _waitingRoom;
     [SerializeField]
     bool            _isUnlocked = false;
-
-    BoxCollider[]   _boxColliders;
 
 
 
@@ -19,6 +24,10 @@ public class ExteriorBuilding : MonoBehaviour
 
 
     public BoxCollider[] BoxColliders { get => _boxColliders; }
+
+    public BoxCollider[] Entraces { get => _entrances; }
+
+    public BoxCollider WaitingRoom { get => _waitingRoom; }
 
     public bool IsUnlocked { get => _isUnlocked; }
 }

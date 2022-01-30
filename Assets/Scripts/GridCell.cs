@@ -95,15 +95,37 @@ public class GridCell : MonoBehaviour
     }
 
 
-    public void CheckIfInsideExteriorBuilding(BoxCollider[] boxColliders)
+    public void CheckExteriorBuilding(ExteriorBuilding exteriorBuilding)
     {
         // if was already checked for validity, leave
         if (_type != Type.Invalid) { return; }
 
-        // check each collider wheter is contained.
-        foreach (var boxCollider in boxColliders)
+
+        CheckAgainstWaitingRoom(exteriorBuilding);
+    }
+
+    private void CheckAgainstWaitingRoom(ExteriorBuilding exteriorBuilding)
+    {
+        if (exteriorBuilding.WaitingRoom.bounds.Intersects(_boxCollider.bounds))
         {
-            if (boxCollider.bounds.Intersects(_boxCollider.bounds))
+            _type = Type.ItemOccupied;
+            _previousType = _type;
+            SetColourBasedOnType();
+        }
+        else
+        {
+            CheckAgainstExteriorBuilding(exteriorBuilding);
+        }
+    }
+
+    private void CheckAgainstExteriorBuilding(ExteriorBuilding exteriorBuilding)
+    {
+        // check each collider wheter is contained.
+        foreach (var boxCollider in exteriorBuilding.BoxColliders)
+        {
+            if (_type == Type.Invalid && 
+                boxCollider.bounds.Intersects(_boxCollider.bounds) && 
+                !CheckAgainstEntrances(exteriorBuilding))
             {
                 _type = Type.ValidExterior;
                 _previousType = _type;
@@ -111,9 +133,27 @@ public class GridCell : MonoBehaviour
                 break;
             }
         }
-        
     }
 
+    private bool CheckAgainstEntrances(ExteriorBuilding exteriorBuilding)
+    {
+        bool isEntrace = false;
+
+        foreach (var entrance in exteriorBuilding.Entraces)
+        {
+            if (entrance.bounds.Intersects(_boxCollider.bounds))
+            {
+                _type = Type.ItemOccupied;
+                _previousType = _type;
+                SetColourBasedOnType();
+
+                isEntrace = true;
+                break;
+            }
+        }
+
+        return isEntrace;
+    }
 
     public void UnderConstruction()
     {
