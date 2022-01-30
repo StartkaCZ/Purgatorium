@@ -7,8 +7,6 @@ public class MainCameraScript : MonoBehaviour
     [SerializeField]
     float rotationSpeed = 75.0f;
     [SerializeField]
-    float tiltSpeed = 5000.0f;
-    [SerializeField]
     float zoomSpeed = 1000.0f;
 
     const float MAXDISTANCE = 125.0f;
